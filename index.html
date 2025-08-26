@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>SamLux - متجر ملابس وإكسسوارات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {font-family: 'Tahoma', sans-serif; margin:0; padding:0; background:#111; color:#f5f5f5;}
+    header {display:flex; justify-content:space-between; align-items:center; background:#000; color:#FFD700; padding:12px 20px; box-shadow:0 2px 6px rgba(0,0,0,0.6);}
+    header h1 {margin:0; font-size:26px; text-align:center; flex:1; font-weight:bold; letter-spacing:1px;}
+    header .actions {display:flex; gap:10px;}
+    header button {background:#FFD700; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; font-weight:bold; color:#000; transition:0.3s;}
+    header button:hover {background:#e6c200;}
+    h2,h3 {color:#FFD700;}
+    
+    .products {display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:20px; padding:20px;}
+    .product {background:#222; border:1px solid #444; border-radius:10px; overflow:hidden; text-align:center; padding:10px; transition:0.3s;}
+    .product:hover {transform:scale(1.05); border-color:#FFD700;}
+    .product img {max-width:100%; height:180px; object-fit:cover; border-bottom:2px solid #FFD700;}
+    .product h3 {margin:10px 0 5px; color:#FFD700;}
+    .product p {margin:0; color:#ccc;}
+    .product button {margin-top:10px; background:#FFD700; color:#000; padding:8px 14px; border:none; border-radius:6px; cursor:pointer; font-weight:bold;}
+    .product button:hover {background:#e6c200;}
+    
+    footer {background:#000; color:#FFD700; padding:20px; text-align:center; margin-top:20px;}
+    footer a {color:#fff; text-decoration:none; font-weight:bold;}
+    
+    .page {display:none; padding:20px;}
+    .page.active {display:block;}
+    input, select, textarea {width:100%; padding:10px; margin:10px 0; border:1px solid #FFD700; border-radius:6px; background:#111; color:#fff;}
+    .form-box {max-width:450px; margin:auto; background:#222; padding:25px; border-radius:10px; border:1px solid #FFD700; box-shadow:0 0 12px rgba(255,215,0,0.3);}
+    .form-box h2 {text-align:center;}
+    a.whatsapp {display:inline-block; margin-top:10px; padding:10px 16px; background:#25D366; color:#fff; border-radius:6px; text-decoration:none; font-weight:bold;}
+    a.whatsapp:hover {background:#1ebe5b;}
+
+    #cartItems {margin-top:15px;}
+    .cart-item {display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid #444;}
+    .cart-item span {flex:1;}
+    .cart-item button {background:#FFD700; border:none; padding:4px 8px; margin:0 2px; border-radius:4px; cursor:pointer; font-weight:bold; color:#000;}
+    .copy-btn {margin-top:8px; background:#444; color:#fff; padding:6px 10px; border:none; border-radius:6px; cursor:pointer;}
+    .copy-btn:hover {background:#666;}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="actions">
+    <button onclick="toggleLang()">🌐 اللغة</button>
+    <button onclick="showPage('signup')">إنشاء حساب</button>
+    <button onclick="showPage('cart')">🛒 السلة (<span id="cartCount">0</span>)</button>
+  </div>
+  <h1>SamLux</h1>
+</header>
+
+<!-- الصفحة الرئيسية -->
+<div id="home" class="page active">
+  <h2 style="text-align:center; margin-top:20px;">منتجاتنا</h2>
+  <div class="products">
+    <div class="product">
+      <img src="https://via.placeholder.com/220x180" alt="منتج 1">
+      <h3>قميص رجالي</h3>
+      <p>السعر: 50 د</p>
+      <button onclick="openProduct('قميص رجالي',50)">عرض المنتج</button>
+    </div>
+    <div class="product">
+      <img src="https://via.placeholder.com/220x180" alt="منتج 2">
+      <h3>حقيبة يد</h3>
+      <p>السعر: 70 د</p>
+      <button onclick="openProduct('حقيبة يد',70)">عرض المنتج</button>
+    </div>
+  </div>
+  <div style="padding:20px; text-align:center;">
+    <h3>عن SamLux</h3>
+    <p>SamLux متجر تونسي فاخر لبيع الملابس والإكسسوارات أونلاين مع توصيل سريع عبر البريد السريع.</p>
+  </div>
+</div>
+
+<!-- صفحة إنشاء حساب -->
+<div id="signup" class="page">
+  <div class="form-box">
+    <h2>إنشاء حساب</h2>
+    <input type="text" placeholder="الاسم الكامل">
+    <input type="email" placeholder="البريد الإلكتروني">
+    <input type="password" placeholder="كلمة المرور">
+    <button style="width:100%; background:#FFD700; color:#000; padding:10px; border:none; border-radius:6px; font-weight:bold;">تسجيل</button>
+  </div>
+</div>
+
+<!-- صفحة المنتج -->
+<div id="product" class="page">
+  <div class="form-box">
+    <h2 id="productName">تفاصيل المنتج</h2>
+    <img id="productImg" src="https://via.placeholder.com/400x250" alt="منتج" style="width:100%; border-radius:6px;">
+    <p id="productDesc">الوصف: منتج فاخر بجودة عالية.</p>
+    <p>السعر: <span id="productPrice">0</span> د</p>
+    <label>الكمية:</label>
+    <input type="number" id="quantity" value="1" min="1">
+    <label>المقاس:</label>
+    <select id="size">
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+    <label>اللون:</label>
+    <select id="color">
+      <option>أسود</option>
+      <option>أبيض</option>
+      <option>أحمر</option>
+    </select>
+    <p style="color:lightgreen;">متوفر</p>
+    <button onclick="addToCart()" style="width:100%; background:#FFD700; color:#000; padding:10px; border:none; border-radius:6px; font-weight:bold;">إضافة إلى السلة</button>
+  </div>
+</div>
+
+<!-- صفحة السلة -->
+<div id="cart" class="page">
+  <div class="form-box">
+    <h2>🛒 سلة المشتريات</h2>
+    <div id="cartItems"></div>
+    <h3>الإجمالي: <span id="cartTotal">0</span> د</h3>
+    
+    <h3>طرق الدفع:</h3>
+    <p>💳 الرجاء تحويل المبلغ إلى البطاقة البريدية:</p>
+    <p id="cardNumber" style="font-size:18px; font-weight:bold; color:#FFD700;">1234-5678-9012-3456</p>
+    <button class="copy-btn" onclick="copyCard()">📋 نسخ الرقم</button>
+    <p>بعد التحويل، يرجى الضغط على الزر أسفله لتأكيد الطلب:</p>
+    
+    <a class="whatsapp" href="https://wa.me/21629659141" target="_blank">✅ تأكيد الدفع عبر واتساب</a>
+  </div>
+</div>
+
+<!-- صفحة التواصل -->
+<div id="contact" class="page">
+  <div class="form-box">
+    <h2>تواصل معنا</h2>
+    <p>للاستفسار أو الطلب، يمكنك التواصل عبر الواتساب:</p>
+    <a class="whatsapp" href="https://wa.me/21629659141" target="_blank">📱 29659141</a>
+    <p style="margin-top:15px;">التوصيل متوفر عبر البريد السريع في تونس.</p>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2025 SamLux - جميع الحقوق محفوظة</p>
+  <p><a href="#" onclick="showPage('contact')">تواصل معنا</a></p>
+</footer>
+
+<script>
+  let cart = [];
+  let currentProduct = {name:"", price:0};
+
+  function showPage(pageId){
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  function toggleLang(){
+    alert("🌐 English version coming soon!");
+  }
+
+  function openProduct(name, price){
+    currentProduct = {name, price};
+    document.getElementById("productName").innerText = name;
+    document.getElementById("productPrice").innerText = price;
+    showPage('product');
+  }
+
+  function addToCart(){
+    const qty = parseInt(document.getElementById("quantity").value);
+    const size = document.getElementById("size").value;
+    const color = document.getElementById("color").value;
+    cart.push({name:currentProduct.name, price:currentProduct.price, qty, size, color});
+    updateCart();
+    showPage('cart');
+  }
+
+  function updateCart(){
+    const cartDiv = document.getElementById("cartItems");
+    cartDiv.innerHTML = "";
+    let total = 0;
+    cart.forEach((item, index)=>{
+      total += item.price * item.qty;
+      cartDiv.innerHTML += `
+        <div class="cart-item">
+          <span>${item.name} (${item.size}, ${item.color}) x${item.qty}</span>
+          <span>${item.price*item.qty} د</span>
+          <button onclick="removeItem(${index})">❌</button>
+        </div>`;
+    });
+    document.getElementById("cartTotal").innerText = total;
+    document.getElementById("cartCount").innerText = cart.length;
+  }
+
+  function removeItem(i){
+    cart.splice(i,1);
+    updateCart();
+  }
+
+  function copyCard(){
+    const cardNumber = document.getElementById("cardNumber").innerText;
+    navigator.clipboard.writeText(cardNumber).then(()=>{
+      alert("✅ تم نسخ رقم البطاقة: " + cardNumber);
+    });
+  }
+</script>
+
+</body>
+      </html>
